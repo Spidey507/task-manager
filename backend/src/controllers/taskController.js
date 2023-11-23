@@ -14,3 +14,14 @@ exports.createTask = async (req, res) => {
   }
 };
 
+// Read
+exports.getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find();
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
