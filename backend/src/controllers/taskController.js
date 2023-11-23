@@ -37,3 +37,12 @@ exports.getTaskById = async (req, res) => {
   }
 };
 
+// Update
+exports.updateTask = async (req, res) => {
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedTask);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
