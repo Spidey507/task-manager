@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -35,15 +37,19 @@ exports.register = async (req, res) => {
       // Check if the user exists
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(401).json({ message: 'Invalid email or password' });
+        return res.status(401).json({ message: 'Invalid email' });
       }
   
       // Check if the password is correct
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
-        return res.status(401).json({ message: 'Invalid email or password' });
+        //console.log(password)
+        //console.log(user.password)
+        //console.log(password == user.password);
+        console.log('Received login request:', { email, password });
+        return res.status(401).json({ message: 'Invalid password' });
       }
-  
+      console.log("el token es:" + process.env.JWT_SECRET)
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, {
         expiresIn: '1h',

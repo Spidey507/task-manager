@@ -33,7 +33,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// Middleware function for token verification
+// Middleware token verification
 function authenticateToken(req, res, next) {
   const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
 
