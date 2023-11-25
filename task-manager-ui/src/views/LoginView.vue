@@ -1,38 +1,40 @@
 <template>
-    <div>
-      <h2>Login</h2>
-      <form @submit.prevent="loginUser">
-        <label for="email">Email:</label>
-        <input type="email" v-model="email" required>
-  
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" required>
-  
-        <button type="submit">Login</button>
-      </form>
-  
-      <router-link to="/register">Don't have an account? Register here.</router-link>
-    </div>
+  <form @submit.prevent="submit">
+    <input v-model="email" type="text" placeholder="email" />
+    <input v-model="password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
+  </form>
 </template>
-  
-<script>
-import axios from 'axios';
 
+<script>
 export default {
   data() {
     return {
-      username: '',
+      email: '',
       password: ''
     };
   },
   methods: {
     async submit() {
       try {
-        const response = await axios.post(, {
-          username: this.username,
-          password: this.password
+        const response = await fetch("http://localhost:3000/api/users/login", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password
+          })
         });
-        localStorage.setItem('token', response.data.token);
+
+        if (!response.ok) {
+          console.log(response)
+          throw new Error('Error en la solicitud');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
         // Redirige o cambia el estado de la aplicación
       } catch (error) {
         console.error(error);
@@ -42,7 +44,3 @@ export default {
   }
 };
 </script>
-
-<style>
-  
-</style>
