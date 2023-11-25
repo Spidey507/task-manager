@@ -62,9 +62,9 @@
           <tr v-for="task in tasks" :key="task._id">
             <td class="p-2 border">{{ task.title }}</td>
             <td class="p-2 border">{{ task.description }}</td>
-            <td class="p-2 border">{{ task.dueDate }}</td>
+            <td class="p-2 border">{{ formatDate(task.dueDate)  }}</td>
             <td class="p-2 border">
-              <button @click="editTask(task)" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mr-2">Edit</button>
+              <button @click="editTask(task)" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mr-2" data-modal-target="default-modal" data-modal-toggle="default-modal">Edit</button>
               <button @click="deleteTask(task._id)" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Delete</button>
             </td>
           </tr>
@@ -73,12 +73,15 @@
     </div>
 
     <!-- Task Modal -->
-    <task-modal v-if="isModalOpen" :task="selectedTask" @update-task="updateTask" @close-modal="closeModal"></task-modal>
+    <task-modal :task="selectedTask" @update-task="updateTask" @close-modal="closeModal">
+    
+    </task-modal>
   </div>
 </template>
 
 <script>
 import TaskModal from '@/components/TaskModal';
+import { format } from 'date-fns';
 
 export default {
   components: {
@@ -88,7 +91,6 @@ export default {
     return {
       tasks: [],
       selectedTask: null,
-      isModalOpen: false,
       searchTerm: '',
       newTask: {
         title: '',
@@ -101,6 +103,10 @@ export default {
     this.fetchTasks();
   },
   methods: {
+    formatDate(date) {
+      // Format the date in mm/dd/yyyy format
+      return format(new Date(date), 'MM/dd/yyyy');
+    },
     getUsername() {
       const token = localStorage.getItem('token');
       if (token) {
@@ -170,7 +176,6 @@ export default {
     editTask(task) {
       // Open the modal with the selected task's details
       this.selectedTask = task;
-      this.isModalOpen = true;
     },
     updateTask(updatedTask) {
       // Find the index of the task to be updated
@@ -181,13 +186,9 @@ export default {
         // Use Vue's reactivity to update the task
         this.tasks[index] = { ...updatedTask };
       }
-
-      // Close the modal
-      this.isModalOpen = false;
     },
     closeModal() {
       // Close the modal without updating the task
-      this.isModalOpen = false;
       this.selectedTask = null;
     },
     async deleteTask(taskId) {
