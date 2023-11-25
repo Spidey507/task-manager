@@ -1,5 +1,31 @@
 const Task = require('../models/Task');
 
+// Read with optional search, sort, and sort direction
+exports.getAllTasks = async (req, res) => {
+  try {
+    let query = {};
+    let sort = {};
+
+    // Búsqueda
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      query = { $or: [{ title: searchRegex }, { description: searchRegex }] };
+    }
+
+    // Ordenación y dirección de la ordenación
+    if (req.query.sort) {
+      const sortField = req.query.sort === 'date' ? 'dueDate' : 'title';
+      const sortOrder = req.query.order && req.query.order === 'desc' ? 'desc' : 'asc';
+      sort[sortField] = sortOrder;
+    }
+
+    const tasks = await Task.find(query).sort(sort);
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Controller functions for CRUD operations
 
 // Create

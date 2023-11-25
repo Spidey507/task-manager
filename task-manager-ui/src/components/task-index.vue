@@ -1,6 +1,12 @@
 <template>
   <div>
     <h2>Task List</h2>
+
+    <!-- Campo de búsqueda -->
+    <div>
+      <label for="search">Search:</label>
+      <input type="text" v-model="searchTerm" @input="searchTasks">
+    </div>
     <ul>
       <li v-for="task in tasks" :key="task._id">
         {{ task.title }} - {{ task.description }} - {{ task.dueDate }}
@@ -24,12 +30,7 @@
     </form>
 
 
-    <task-modal
-      v-if="isModalOpen"
-      :task="selectedTask"
-      @update-task="updateTask"
-      @close-modal="closeModal"
-    ></task-modal>
+    <task-modal v-if="isModalOpen" :task="selectedTask" @update-task="updateTask" @close-modal="closeModal"></task-modal>
   </div>
 </template>
 
@@ -45,6 +46,7 @@ export default {
       tasks: [],
       selectedTask: null,
       isModalOpen: false,
+      searchTerm: '',
       newTask: {
         title: '',
         description: '',
@@ -59,7 +61,14 @@ export default {
     async fetchTasks() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/tasks', {
+        let url = 'http://localhost:3000/api/tasks';
+
+        // Añade el parámetro de búsqueda a la URL
+        if (this.searchTerm) {
+          url += `?search=${encodeURIComponent(this.searchTerm)}`;
+        }
+
+        const response = await fetch(url, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -74,6 +83,9 @@ export default {
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
+    },
+    searchTasks() {
+      this.fetchTasks();
     },
     async createTask() {
       try {
