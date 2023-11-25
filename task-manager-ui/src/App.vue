@@ -1,16 +1,15 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <TaskIndex msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <h1>Hola</h1>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import TaskIndex from './components/task-index.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    TaskIndex
-  }
 }
 </script>
 
