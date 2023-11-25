@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <form @submit.prevent="submit">
-      <input v-model="email" type="text" placeholder="email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button type="submit">Login</button>
-
-    </form>
-    <p>Don't have an account? <router-link to="/register">Register here</router-link>.</p>
+  <div class="bg-gray-800 min-h-screen flex items-center justify-center">
+    <div class="bg-gray-700 py-10 shadow-md rounded flex flex-col w-1/3 items-center">
+      <form @submit.prevent="submit" class="flex flex-col items-center mb-4">
+        <input v-model="email" type="text" placeholder="Email" class="mb-4 p-2 border rounded focus:border-blue-500 text-center focus:outline-none" />
+        <input v-model="password" type="password" placeholder="Password" class="mb-4 p-2 border rounded focus:border-blue-500 text-center focus:outline-none" />
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded">Login</button>
+      </form>
+      <p class="text-white">Don't have an account? <router-link to="/register" class="text-blue-500 hover:text-blue-600">Register here</router-link>.</p>
+    </div>
   </div>
 </template>
 

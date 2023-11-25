@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <head>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    </head>
     <router-view></router-view>
     <button v-if="authStatus" @click="logout">Logout</button>
   </div>
@@ -34,12 +37,5 @@ export default {
 
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
