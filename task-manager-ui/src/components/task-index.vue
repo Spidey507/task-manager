@@ -10,7 +10,8 @@
         <!-- Search bar -->
         <div class="mx-4">
           <label for="search" class="text-white">Search:</label>
-          <input type="text" v-model="searchTerm" @input="searchTasks" class="p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+          <input type="text" v-model="searchTerm" @input="searchTasks"
+            class="p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
         </div>
         <!-- Logout button -->
         <button @click="logout" class="bg-red-700 text-white p-2 rounded">Logout</button>
@@ -19,30 +20,34 @@
 
     <!-- Create Task form -->
 
-  <!-- Create Task -->
-  <div class="text-center flex-grow mx-8 mt-4">
-  <h2 class="text-white text-2xl mb-4">Create Task</h2>
-  <form @submit.prevent="createTask" class="bg-gray-700 w-3/4 mx-auto p-4 rounded-lg flex-grow items-center">
-    <div class="flex justify-center mb-2 items-center">
-      <div class="flex items-center">
-        <label for="title" class="block text-white mx-2">Title:</label>
-        <input v-model="newTask.title" type="text" required class="w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center mx-2" />
-      </div>
+    <!-- Create Task -->
+    <div class="text-center flex-grow mx-8 mt-4">
+      <h2 class="text-white text-2xl mb-4">Create Task</h2>
+      <form @submit.prevent="createTask" class="bg-gray-700 w-3/4 mx-auto p-4 rounded-lg flex-grow items-center">
+        <div class="flex justify-center mb-2 items-center">
+          <div class="flex items-center">
+            <label for="title" class="block text-white mx-2">Title:</label>
+            <input v-model="newTask.title" type="text" required
+              class="w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center mx-2" />
+          </div>
 
-      <div class="flex items-center">
-        <label for="description" class="block text-white mx-2">Description:</label>
-        <input v-model="newTask.description" type="text" required class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
-      </div>
+          <div class="flex items-center">
+            <label for="description" class="block text-white mx-2">Description:</label>
+            <input v-model="newTask.description" type="text" required
+              class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+          </div>
 
-      <div class="flex items-center">
-        <label for="dueDate" class="block text-white mx-2">Due Date:</label>
-        <input v-model="newTask.dueDate" type="date" required class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
-      </div>
-      <button type="submit" class="mx-2 flex items-center bg-green-500 hover:bg-green-600 text-white p-3 rounded">Create Task</button>
+          <div class="flex items-center">
+            <label for="dueDate" class="block text-white mx-2">Due Date:</label>
+            <input v-model="newTask.dueDate" type="date" required
+              class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+          </div>
+          <button type="submit"
+            class="mx-2 flex items-center bg-green-500 hover:bg-green-600 text-white p-3 rounded">Create Task</button>
+        </div>
+
+      </form>
     </div>
-
-  </form>
-</div>
 
     <!-- Task List -->
     <div class="text-center flex-grow mx-8">
@@ -64,29 +69,22 @@
             <td class="p-2 border">{{ task.description }}</td>
             <td class="p-2 border">{{ formatDate(task.dueDate)  }}</td>
             <td class="p-2 border">
-              <button @click="editTask(task)" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mr-2" data-modal-target="default-modal" data-modal-toggle="default-modal">Edit</button>
-              <button @click="deleteTask(task._id)" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Delete</button>
+              <button @click="editTask(task._id)"
+                class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mr-2">Edit</button>
+              <button @click="deleteTask(task._id)"
+                class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    <!-- Task Modal -->
-    <task-modal :task="selectedTask" @update-task="updateTask" @close-modal="closeModal">
-    
-    </task-modal>
   </div>
 </template>
 
 <script>
-import TaskModal from '@/components/TaskModal';
 import { format } from 'date-fns';
 
 export default {
-  components: {
-    TaskModal,
-  },
   data() {
     return {
       tasks: [],
@@ -173,23 +171,8 @@ export default {
         console.error('Error creating task:', error);
       }
     },
-    editTask(task) {
-      // Open the modal with the selected task's details
-      this.selectedTask = task;
-    },
-    updateTask(updatedTask) {
-      // Find the index of the task to be updated
-      const index = this.tasks.findIndex(task => task._id === updatedTask._id);
-
-      // If the task is found, update it
-      if (index !== -1) {
-        // Use Vue's reactivity to update the task
-        this.tasks[index] = { ...updatedTask };
-      }
-    },
-    closeModal() {
-      // Close the modal without updating the task
-      this.selectedTask = null;
+    editTask(taskId) {
+      this.$router.push({ name: 'EditView', params: { id: taskId } });
     },
     async deleteTask(taskId) {
       try {
@@ -216,6 +199,4 @@ export default {
 };
 </script>
 
-<style>
-/* Add your styles here */
-</style>
+<style>/* Add your styles here */</style>

@@ -2,12 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from '@/views/LoginView';
 import RegisterView from '@/views/RegisterView';
 import TaskIndex from '@/components/task-index';
+import EditView from '@/views/EditView';
 
 const routes = [
   { path: '/login', name: 'LoginView' ,component: LoginView },
   { path: '/register', name: 'RegisterView', component: RegisterView }, 
   { path: '/tasks', name: 'TaskIndex', component: TaskIndex, meta: { requiresAuth: true } },
   { path: '/:catchAll(.*)', redirect: '/login' },
+  { path: '/tasks/:id', name: 'EditView', component: EditView, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({
