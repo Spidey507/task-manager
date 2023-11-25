@@ -7,6 +7,7 @@ const routes = [
   { path: '/login', name: 'LoginView' ,component: LoginView },
   { path: '/register', name: 'RegisterView', component: RegisterView }, 
   { path: '/tasks', name: 'TaskIndex', component: TaskIndex, meta: { requiresAuth: true } },
+  { path: '/:catchAll(.*)', redirect: '/login' },
 ];
 
 const router = createRouter({
