@@ -22,7 +22,11 @@ exports.register = async (req, res) => {
       const newUser = new User({ username, email, password: hashedPassword });
       await newUser.save();
   
-      res.status(201).json({ message: 'User registered successfully' });
+      // Generate a JWT token
+      const token = jwt.sign({ new_user: newUser._id, email: newUser.email }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+      });
+      res.status(201).json({ message: 'User registered successfully', token, userId: newUser._id });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -49,7 +53,6 @@ exports.register = async (req, res) => {
         console.log('Received login request:', { email, password });
         return res.status(401).json({ message: 'Invalid password' });
       }
-      console.log("el token es:" + process.env.JWT_SECRET)
       // Generate a JWT token
       const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, {
         expiresIn: '1h',
