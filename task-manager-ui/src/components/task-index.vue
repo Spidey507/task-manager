@@ -42,7 +42,18 @@ export default {
   methods: {
     async fetchTasks() {
       try {
-        const response = await fetch('http://localhost:3000/api/tasks');
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/api/tasks', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Error fetching tasks');
+        }
+
         this.tasks = await response.json();
       } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -50,9 +61,11 @@ export default {
     },
     async createTask() {
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:3000/api/tasks', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(this.newTask),
@@ -76,8 +89,13 @@ export default {
     },
     async deleteTask(taskId) {
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch(`http://localhost:3000/api/tasks/${taskId}`, {
           method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         });
 
         if (response.ok) {
