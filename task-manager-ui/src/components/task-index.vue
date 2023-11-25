@@ -18,12 +18,27 @@
         <div class="flex items-center">
           <label for="dueDate" class="block text-white mx-2">Due Date:</label>
           <input v-model="newTask.dueDate" type="date" required
-            class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+            class="mx-2 w-full p-2 border rounded focus:outline-nonbe focus:border-blue-500 text-center" />
         </div>
         <button type="submit" class="mx-2 flex items-center bg-green-500 hover:bg-green-600 text-white p-3 rounded">Create
           Task</button>
+        </div>
+      </form>
+      <div class="w-3/4 mx-auto p-4 rounded-lg flex-grow items-center">
+        <div v-if="checkErrors()"
+          class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+          role="alert">
+          <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span class="sr-only">Info</span>
+          <div>
+            <span class="font-medium">{{ this.errorMessage }}</span>
+          </div>
+        </div>
       </div>
-    </form>
   </div>
   <!-- Search bar -->
   <div class="text-center flex-grow mx-4">
@@ -71,6 +86,7 @@ export default {
       tasks: [],
       selectedTask: null,
       searchTerm: '',
+      errorMessage: null,
       newTask: {
         title: '',
         description: '',
@@ -82,6 +98,9 @@ export default {
     this.fetchTasks();
   },
   methods: {
+    checkErrors(){
+      return(this.errorMessage !== null);
+    },
     formatDate(date) {
       // Format the date in mm/dd/yyyy format
       return format(new Date(date), 'MM/dd/yyyy');
@@ -125,6 +144,8 @@ export default {
       this.fetchTasks();
     },
     async createTask() {
+      this.errorMessage = null;
+
       try {
         const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:3000/api/tasks', {
@@ -150,6 +171,7 @@ export default {
         }
       } catch (error) {
         console.error('Error creating task:', error);
+        this.errorMessage = 'Error creating task';
       }
     },
     editTask(taskId) {
