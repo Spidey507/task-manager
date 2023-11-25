@@ -39,3 +39,57 @@ You are free to use any of the following technologies when creating this applica
 - PostgreSQL
 - Oracle
 - MS SQL
+
+# Installation steps
+## Install Node
+### Install curl
+`sudo apt-get install curl`
+`curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -`
+
+### Install nodejs
+`sudo apt-get install nodejs`
+
+### Check nodejs and npm versions
+`node -v`
+`npm -v`
+
+Make sure that the node version is 20.10.0.
+
+## Install mongodb
+`sudo apt-get install -y mongodb-org`
+
+`echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list`
+
+`curl -fsSL https://pgp.mongodb.com/server-7.0.asc |    sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg    --dearmor`
+
+`sudo apt-get update`
+
+`sudo apt-get install -y mongodb-org`
+
+`sudo mkdir -p /data/db`
+
+`sudo systemctl start mongod`
+
+`sudo systemctl status mongod`
+
+
+## Install Vue
+`npm install -g @vue/cli`
+
+# Run application
+## Run MongoDB
+Run in console `mongod` or `mongosh`. Make sure to not close the console while the application is running.
+
+## Run backend
+Make sure to install all dependencies.
+1. access the backend directory `cd backend`
+2. `npm install`
+3. `npm start`
+
+## Run Vue
+Install all dependencies before running the frontend.
+1. access task-manager-ui directory `cd task-manager-ui`
+2. `npm install`
+3. `npm run serve`
+
+
