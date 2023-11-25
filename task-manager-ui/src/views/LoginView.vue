@@ -1,9 +1,13 @@
 <template>
-  <form @submit.prevent="submit">
-    <input v-model="email" type="text" placeholder="email" />
-    <input v-model="password" type="password" placeholder="Password" />
-    <button type="submit">Login</button>
-  </form>
+  <div>
+    <form @submit.prevent="submit">
+      <input v-model="email" type="text" placeholder="email" />
+      <input v-model="password" type="password" placeholder="Password" />
+      <button type="submit">Login</button>
+
+    </form>
+    <p>Don't have an account? <router-link to="/register">Register here</router-link>.</p>
+  </div>
 </template>
 
 <script>
@@ -29,17 +33,26 @@ export default {
         });
 
         if (!response.ok) {
-          console.log(response)
-          throw new Error('Error en la solicitud');
+          throw new Error('Error in login request');
         }
 
         const data = await response.json();
         localStorage.setItem('token', data.token);
-        // Redirige o cambia el estado de la aplicación
+
+        this.$router.push('/tasks');
+
+        // Redirect or change application state
       } catch (error) {
         console.error(error);
-        // Manejo de errores
+        // Handle errors
       }
+    }
+
+  },
+  mounted() {
+    // If user is already authenticated, redirect to tasks page
+    if (this.$root.isAuthenticated()) {
+      this.$router.push('/tasks');
     }
   }
 };
