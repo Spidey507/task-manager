@@ -47,9 +47,6 @@ exports.register = async (req, res) => {
       // Check if the password is correct
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
-        //console.log(password)
-        //console.log(user.password)
-        //console.log(password == user.password);
         console.log('Received login request:', { email, password });
         return res.status(401).json({ message: 'Invalid password' });
       }
