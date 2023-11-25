@@ -1,35 +1,78 @@
 <template>
-  <div>
-    <h2>Task List</h2>
-
-    <!-- Campo de búsqueda -->
-    <div>
-      <label for="search">Search:</label>
-      <input type="text" v-model="searchTerm" @input="searchTasks">
+  <div class="bg-gray-800 h-screen flex flex-col">
+    <!-- Navbar -->
+    <div class="bg-gray-700 p-4 flex justify-between items-center">
+      <!-- Welcome message and logout button -->
+      <div class="text-white">
+        <!-- Welcome, {{ getUsername() }}! -->
+      </div>
+      <div class="flex items-center">
+        <!-- Search bar -->
+        <div class="mx-4">
+          <label for="search" class="text-white">Search:</label>
+          <input type="text" v-model="searchTerm" @input="searchTasks" class="p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+        </div>
+        <!-- Logout button -->
+        <button @click="logout" class="bg-red-700 text-white p-2 rounded">Logout</button>
+      </div>
     </div>
-    <ul>
-      <li v-for="task in tasks" :key="task._id">
-        {{ task.title }} - {{ task.description }} - {{ task.dueDate }}
-        <button @click="editTask(task)">Edit</button>
-        <button @click="deleteTask(task._id)">Delete</button>
-      </li>
-    </ul>
 
-    <h2>Create Task</h2>
-    <form @submit.prevent="createTask">
-      <label for="title">Title:</label>
-      <input type="text" v-model="newTask.title" required>
+    <!-- Create Task form -->
 
-      <label for="description">Description:</label>
-      <input type="text" v-model="newTask.description" required>
+  <!-- Create Task -->
+  <div class="text-center flex-grow mx-8 mt-4">
+  <h2 class="text-white text-2xl mb-4">Create Task</h2>
+  <form @submit.prevent="createTask" class="bg-gray-700 w-3/4 mx-auto p-4 rounded-lg flex-grow items-center">
+    <div class="flex justify-center mb-2 items-center">
+      <div class="flex items-center">
+        <label for="title" class="block text-white mx-2">Title:</label>
+        <input v-model="newTask.title" type="text" required class="w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center mx-2" />
+      </div>
 
-      <label for="dueDate">Due Date:</label>
-      <input type="date" v-model="newTask.dueDate" required>
+      <div class="flex items-center">
+        <label for="description" class="block text-white mx-2">Description:</label>
+        <input v-model="newTask.description" type="text" required class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+      </div>
 
-      <button type="submit">Create Task</button>
-    </form>
+      <div class="flex items-center">
+        <label for="dueDate" class="block text-white mx-2">Due Date:</label>
+        <input v-model="newTask.dueDate" type="date" required class="mx-2 w-full p-2 border rounded focus:outline-none focus:border-blue-500 text-center" />
+      </div>
+      <button type="submit" class="mx-2 flex items-center bg-green-500 hover:bg-green-600 text-white p-3 rounded">Create Task</button>
+    </div>
 
+  </form>
+</div>
 
+    <!-- Task List -->
+    <div class="text-center flex-grow mx-8">
+      <h2 class="text-white text-2xl mb-4">Task List</h2>
+      <table class="bg-gray-700 w-3/4 mx-auto text-white border border-gray-600 rounded-lg overflow-hidden">
+        <!-- Table header -->
+        <thead>
+          <tr>
+            <th class="p-2 border">Title</th>
+            <th class="p-2 border">Description</th>
+            <th class="p-2 border">Due Date</th>
+            <th class="p-2 border">Actions</th>
+          </tr>
+        </thead>
+        <!-- Table body -->
+        <tbody>
+          <tr v-for="task in tasks" :key="task._id">
+            <td class="p-2 border">{{ task.title }}</td>
+            <td class="p-2 border">{{ task.description }}</td>
+            <td class="p-2 border">{{ task.dueDate }}</td>
+            <td class="p-2 border">
+              <button @click="editTask(task)" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mr-2">Edit</button>
+              <button @click="deleteTask(task._id)" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Task Modal -->
     <task-modal v-if="isModalOpen" :task="selectedTask" @update-task="updateTask" @close-modal="closeModal"></task-modal>
   </div>
 </template>
@@ -58,6 +101,15 @@ export default {
     this.fetchTasks();
   },
   methods: {
+    getUsername() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Decode the token to extract user information
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.username; // Adjust this based on your token structure
+      }
+      return '';
+    },
     async fetchTasks() {
       try {
         const token = localStorage.getItem('token');
