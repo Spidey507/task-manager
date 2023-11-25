@@ -4,6 +4,7 @@
     <ul>
       <li v-for="task in tasks" :key="task._id">
         {{ task.title }} - {{ task.description }} - {{ task.dueDate }}
+        <button @click="editTask(task)">Edit</button>
         <button @click="deleteTask(task._id)">Delete</button>
       </li>
     </ul>
@@ -21,14 +22,29 @@
 
       <button type="submit">Create Task</button>
     </form>
+
+
+    <task-modal
+      v-if="isModalOpen"
+      :task="selectedTask"
+      @update-task="updateTask"
+      @close-modal="closeModal"
+    ></task-modal>
   </div>
 </template>
 
 <script>
+import TaskModal from '@/components/TaskModal';
+
 export default {
+  components: {
+    TaskModal,
+  },
   data() {
     return {
       tasks: [],
+      selectedTask: null,
+      isModalOpen: false,
       newTask: {
         title: '',
         description: '',
@@ -86,6 +102,29 @@ export default {
       } catch (error) {
         console.error('Error creating task:', error);
       }
+    },
+    editTask(task) {
+      // Open the modal with the selected task's details
+      this.selectedTask = task;
+      this.isModalOpen = true;
+    },
+    updateTask(updatedTask) {
+      // Find the index of the task to be updated
+      const index = this.tasks.findIndex(task => task._id === updatedTask._id);
+
+      // If the task is found, update it
+      if (index !== -1) {
+        // Use Vue's reactivity to update the task
+        this.tasks[index] = { ...updatedTask };
+      }
+
+      // Close the modal
+      this.isModalOpen = false;
+    },
+    closeModal() {
+      // Close the modal without updating the task
+      this.isModalOpen = false;
+      this.selectedTask = null;
     },
     async deleteTask(taskId) {
       try {
